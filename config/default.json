@@ -1,0 +1,15 @@
+{
+  "mail": {
+    "whitelist": {
+      "addresses": [
+      ]
+    },
+    "splitterAddresses": []
+  },
+  "smtp": {
+    "port": 1025
+  },
+  "api": {
+    "port": 3000
+  }
+}
