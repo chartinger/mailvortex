@@ -53,12 +53,20 @@ server.listen(config.get('smtp.port'));
 // Require the framework and instantiate it
 import fastify from 'fastify';
 
-const apiServer = fastify({ logger: false });
+const apiServer = fastify({ logger: true });
 
 apiServer.get<{
   Params: { address: string };
 }>('/mail/:address', async request => {
   return mailRepository.getInbox(request.params.address);
+});
+
+apiServer.get<{
+  Params: { address: string };
+}>('/fetch/:address', async request => {
+  const mails = mailRepository.getInbox(request.params.address);
+  mailRepository.clearInbox(request.params.address);
+  return mails;
 });
 
 const start = async (): Promise<void> => {

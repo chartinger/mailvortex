@@ -1,10 +1,10 @@
-import { ParsedMail } from 'mailparser';
+import { ISavedMail } from './SavedMail';
 
 export class MailRepository {
   private max_inbox_size = 100;
-  private inboxes: Map<string, Array<ParsedMail>> = new Map();
+  private inboxes: Map<string, Array<ISavedMail>> = new Map();
 
-  public deliver(address: string, mail: ParsedMail): void {
+  public deliver(address: string, mail: ISavedMail): void {
     let inbox = this.inboxes.get(address);
     if(inbox == null) {
       inbox = [];
@@ -17,7 +17,7 @@ export class MailRepository {
     console.log(`Delivered mail to ${address}, total mails: ${inbox.length}`);
   }
 
-  public getInbox(address: string): Array<ParsedMail> {
+  public getInbox(address: string): Array<ISavedMail> {
     return this.inboxes.get(address) ?? [];
   }
 
