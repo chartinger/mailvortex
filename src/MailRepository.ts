@@ -1,10 +1,10 @@
-import { ParsedMail } from "mailparser";
+import { ParsedMail } from 'mailparser';
 
 export class MailRepository {
   private max_inbox_size = 100;
   private inboxes: Map<string, Array<ParsedMail>> = new Map();
 
-  public deliver(address: string, mail: ParsedMail) {
+  public deliver(address: string, mail: ParsedMail): void {
     let inbox = this.inboxes.get(address);
     if(inbox == null) {
       inbox = [];

@@ -1,4 +1,4 @@
-import { SMTPServer, SMTPServerDataStream } from 'smtp-server';
+import { SMTPServer } from 'smtp-server';
 import { simpleParser } from 'mailparser';
 import { MailRepository } from './MailRepository';
 import { MailDelivery } from './MailDelivery';
@@ -16,9 +16,9 @@ const server = new SMTPServer({
     cb();
   },
   onAuth(auth, session, callback) {
-    console.log('SMTP login for user: ' + auth.username);
+    console.log(`SMTP login for user: ${auth.username}`);
     callback(null, {
-      user: auth.username
+      user: auth.username,
     });
   },
   onData(stream, session, callback) {
@@ -30,43 +30,43 @@ const server = new SMTPServer({
         console.info('++');
         callback();
       },
-      callback
+      callback,
     );
   },
   onRcptTo(address, session, callback) {
     console.log('RCPT', address.address);
-    if (!whitelistedAddresses.includes(address.address)) {
+    if(!whitelistedAddresses.includes(address.address)) {
       return callback(
-        new Error("Not allowed")
+        new Error('Not allowed'),
       );
     }
     return callback(); // Accept the address
-  }
+  },
 });
 
 server.on('error', err => {
   console.error(err);
 });
 
-server.listen(config.get('smtp.port'), 'localhost');
+server.listen(config.get('smtp.port'));
 
 // Require the framework and instantiate it
 import fastify from 'fastify';
 
-const apiServer = fastify({ logger: true })
+const apiServer = fastify({ logger: false });
 
 apiServer.get<{
   Params: { address: string };
-}>('/mail/:address', async (request, reply) => {
+}>('/mail/:address', async request => {
   return mailRepository.getInbox(request.params.address);
-})
+});
 
-const start = async () => {
+const start = async (): Promise<void> => {
   try {
-    await apiServer.listen(config.get('api.port'))
-  } catch (err) {
-    apiServer.log.error(err)
-    process.exit(1)
+    await apiServer.listen(config.get('api.port'));
+  } catch(err) {
+    apiServer.log.error(err);
+    process.exit(1);
   }
-}
-start()
+};
+void start();
