@@ -16,30 +16,26 @@ const server = new SMTPServer({
     cb();
   },
   onAuth(auth, session, callback) {
-    console.log(`SMTP login for user: ${auth.username}`);
-    callback(null, {
-      user: auth.username,
-    });
+    console.log(`Denied SMTP login for user: ${auth.username}`);
+    return callback(new Error('Invalid username or password'));
   },
   onData(stream, session, callback) {
     simpleParser(stream).then(
       mail => {
         mailDelivery.deliver(mail);
-        console.info('++');
-        console.info(decodeURI(decodeURIComponent(mail.text ?? '')));
-        console.info('++');
         callback();
       },
       callback,
     );
   },
   onRcptTo(address, session, callback) {
-    console.log('RCPT', address.address);
     if(!whitelistedAddresses.includes(address.address)) {
+      console.log('Denied RCPT', address.address);
       return callback(
         new Error('Not allowed'),
       );
     }
+    console.log('RCPT', address.address);
     return callback(); // Accept the address
   },
 });
