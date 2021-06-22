@@ -12,7 +12,7 @@ export class MailRepository {
     }
     inbox.push(mail);
     if(inbox.length > this.max_inbox_size) {
-      inbox.length = this.max_inbox_size;
+      inbox.shift();
     }
     console.log(`Delivered mail to ${address}, total mails: ${inbox.length}`);
   }
